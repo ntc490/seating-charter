@@ -1,0 +1,13 @@
+# Classroom layout configuration
+# Defines the number of rows and columns of seats
+
+rows: 4
+columns: 6
+
+# Optional: Block off specific seats (1-indexed)
+# These positions won't be available for students
+blocked_seats:
+  - row: 2
+    column: 3
+  - row: 4
+    column: 6
