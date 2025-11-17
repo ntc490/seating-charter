@@ -8,6 +8,7 @@ let classroomConfig = null;
 let studentsConfig = null;
 let currentSeating = null;
 let generator = null;
+let currentSeed = null;
 
 // DOM Elements
 const classroomFileInput = document.getElementById('classroomFile');
@@ -91,6 +92,7 @@ function generateSeatingChart() {
 
             // Get seed if provided
             const seed = seedInput.value ? parseInt(seedInput.value) : null;
+            currentSeed = seed;
 
             // Generate seating chart
             currentSeating = generator.generate(1000, seed);
@@ -173,7 +175,14 @@ function displayStats(seating) {
         }
     }
 
-    statsDisplay.textContent = `Students: ${totalStudents} | Desks: ${occupiedDesks}/${totalDesks} occupied`;
+    let statsText = `Students: ${totalStudents} | Desks: ${occupiedDesks}/${totalDesks} occupied`;
+
+    // Add seed if it was specified
+    if (currentSeed !== null) {
+        statsText += ` | Seed: ${currentSeed}`;
+    }
+
+    statsDisplay.textContent = statsText;
 }
 
 /**
