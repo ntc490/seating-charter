@@ -23,20 +23,25 @@ students:
   - Tom
 
 constraints:
-  # Students who cannot sit next to each other
+  # Students who cannot sit at the same desk OR adjacent desks
   cannot_sit_together:
     - [Alice, Bob]      # Alice and Bob talk too much
     - [Charlie, Diana]  # Charlie and Diana distract each other
-    - [Emma, Frank, Grace]  # These three can't sit next to ANY of the others in this group
+    - [Emma, Frank, Grace]  # These three can't be near ANY of the others in this group
 
-  # Students who must be in a specific row (1-indexed, 1 = front)
+  # Students who need more space (max 2 students at their desk)
+  large_students:
+    - Henry    # Henry uses a wheelchair
+    - Iris     # Iris has lots of art supplies
+
+  # Students who must be at a desk in a specific row (1-indexed, 1 = front)
   row_requirements:
-    - student: Henry
-      row: 1  # Henry needs to sit in the front row
+    - student: Jack
+      row: 1  # Jack needs to sit in the front row
     - student: Sarah
       row: 1  # Sarah also needs to be in front
 
-  # Students who must be in a specific column (1-indexed, 1 = leftmost)
+  # Students who must be at a desk in a specific column (1-indexed, 1 = leftmost)
   column_requirements:
     - student: Tom
       column: 1  # Tom needs to sit on the left side

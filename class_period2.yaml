@@ -14,5 +14,6 @@ students:
 
 # Constraints are optional - this class has minimal rules
 constraints:
+  # Students who cannot sit at the same desk OR adjacent desks
   cannot_sit_together:
     - [Alex, Bailey]
