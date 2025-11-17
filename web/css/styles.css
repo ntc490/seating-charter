@@ -6,10 +6,10 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-family: Arial, sans-serif;
     line-height: 1.6;
-    color: #333;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #000000;
+    background: #5a3f8a;
     min-height: 100vh;
     padding: 20px;
 }
@@ -18,17 +18,18 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     background: white;
-    border-radius: 12px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    box-shadow: 6px 6px 9px rgba(0, 0, 0, 0.2);
     overflow: hidden;
 }
 
 /* Header */
 header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #32373c;
     color: white;
     padding: 40px 30px;
     text-align: center;
+    box-shadow: 6px 6px 9px rgba(0, 0, 0, 0.2);
 }
 
 header h1 {
@@ -49,14 +50,14 @@ main {
 /* Instructions */
 .instructions {
     background: #f8f9fa;
-    border-left: 4px solid #667eea;
+    border-left: 4px solid #0693e3;
     padding: 20px;
     margin-bottom: 30px;
     border-radius: 8px;
 }
 
 .instructions h2 {
-    color: #667eea;
+    color: #32373c;
     margin-bottom: 15px;
     font-size: 1.3em;
 }
@@ -70,7 +71,7 @@ main {
 }
 
 .instructions a {
-    color: #667eea;
+    color: #0693e3;
     text-decoration: none;
     font-weight: 600;
 }
@@ -117,17 +118,17 @@ main {
 
 .file-label:hover {
     background: #e9ecef;
-    border-color: #667eea;
+    border-color: #0693e3;
 }
 
 .file-upload input[type="file"]:focus + .file-label {
-    outline: 2px solid #667eea;
+    outline: 2px solid #0693e3;
     outline-offset: 2px;
 }
 
 .file-upload.has-file .file-label {
     background: #e7f3ff;
-    border-color: #667eea;
+    border-color: #0693e3;
     border-style: solid;
 }
 
@@ -170,7 +171,7 @@ main {
 
 .seed-input input:focus {
     outline: none;
-    border-color: #667eea;
+    border-color: #0693e3;
 }
 
 /* Buttons */
@@ -179,19 +180,19 @@ main {
     font-size: 1em;
     font-weight: 600;
     border: none;
-    border-radius: 6px;
+    border-radius: 9999px;
     cursor: pointer;
     transition: all 0.3s ease;
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #32373c;
     color: white;
 }
 
 .btn-primary:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    background: #0693e3;
+    box-shadow: 6px 6px 9px rgba(0, 0, 0, 0.2);
 }
 
 .btn-primary:disabled {
@@ -229,7 +230,7 @@ main {
     width: 50px;
     height: 50px;
     border: 4px solid #f3f3f3;
-    border-top: 4px solid #667eea;
+    border-top: 4px solid #0693e3;
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin: 0 auto 20px;
@@ -255,7 +256,7 @@ main {
 }
 
 .results-header h2 {
-    color: #667eea;
+    color: #32373c;
     font-size: 1.8em;
 }
 
@@ -282,7 +283,7 @@ main {
 .front-label, .back-label {
     font-weight: 700;
     font-size: 1.1em;
-    color: #667eea;
+    color: #32373c;
     text-transform: uppercase;
     letter-spacing: 2px;
 }
@@ -334,7 +335,7 @@ main {
 
 .desk-cell.occupied {
     background: #e7f3ff;
-    border-color: #667eea;
+    border-color: #0693e3;
 }
 
 .student-name {
@@ -353,7 +354,7 @@ footer {
 }
 
 footer a {
-    color: #667eea;
+    color: #0693e3;
     text-decoration: none;
 }
 
