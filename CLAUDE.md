@@ -1,19 +1,25 @@
-# Seating Charter Application
+# Seating Charter Web Application
 
 ## Overview
-A Python-based script for teachers to create seating charts with customizable classroom layouts and student placement rules. Students are assigned to desks that can hold multiple students (typically 2-3 students per desk).
+A client-side web application for teachers to create seating charts with customizable classroom layouts and student placement rules. Students are assigned to desks that can hold multiple students (typically 2-3 students per desk).
 
-## Requirements
+**Key Features:**
+- 100% client-side - no server needed, no data transmitted
+- FERPA compliant - all processing happens in browser
+- Works on any device with a modern web browser
+- Can be used online (GitHub Pages) or offline (download and open locally)
+
+## Application Requirements
 
 ### Input Files
 
 #### 1. Student List (YAML)
 - List of student names for a class
 - Different files can be created for different classes
-- File path should be provided as a script argument
+- File is uploaded through the web interface
 - Must support the following rules:
   - **Separation rules**: Combinations of students that cannot sit at the same desk or adjacent desks
-  - **Large students**: Students who require more space and can only share a desk with 1 other student (max 2 total)
+  - **Large students**: Students who require more space and count as 2 towards desk capacity
   - **Position constraints**:
     - Students that need to be at a desk in a specific row
     - Students that need to be at a desk in a specific column
@@ -21,7 +27,7 @@ A Python-based script for teachers to create seating charts with customizable cl
 #### 2. Classroom Layout (YAML)
 - Defines the physical desk arrangement
 - Specifies number of rows and columns of desks
-- **Default desk capacity**: Maximum number of students per desk (e.g., 3 students)
+- **Maximum desk capacity**: Maximum number of students per desk (e.g., 3 students)
 - **Blocked desks**: Optional list of desk positions that are unavailable (e.g., broken desks, teacher's desk)
 - **Desk capacity overrides**: Optional list of specific desks with custom maximum capacity
 - Layout orientation:
@@ -43,7 +49,9 @@ A Python-based script for teachers to create seating charts with customizable cl
 - Place students with position constraints:
   - Specific row requirements (desk must be in specified row)
   - Specific column requirements (desk must be in specified column)
-- **Random seed support**: Optional `--seed` argument for reproducible seating chart generation
+- **Random seed support**: Optional seed input for reproducible seating chart generation
+- **Print support**: Print-friendly output for classroom use
+- **Regenerate**: Create new random arrangements with different seeds
 
 ### Definitions
 
@@ -61,7 +69,25 @@ A Python-based script for teachers to create seating charts with customizable cl
 
 ---
 
+## Technology Stack
+
+### Frontend
+- **HTML5**: Semantic markup, file upload API
+- **CSS3**: Responsive design, print styles
+- **JavaScript (ES6+)**: Core algorithm, UI handling
+
+### Libraries
+- **js-yaml**: YAML parsing in browser (client-side)
+
+### Deployment
+- **GitHub Pages**: Free static hosting
+- **Offline capable**: Can run locally without internet
+
+---
+
 ## Example YAML Files
+
+Example files are provided in the `examples/` directory:
 
 ### classroom.yaml
 ```yaml
@@ -114,7 +140,7 @@ constraints:
     - [Charlie, Diana]       # Charlie and Diana distract each other
     - [Emma, Frank, Grace]   # These three can't be near ANY others in this group
 
-  # Students who need more space (max 2 students at their desk)
+  # Students who need more space (count as 2 towards max capacity)
   large_students:
     - Henry    # Henry uses a wheelchair
     - Iris     # Iris has lots of art supplies
@@ -132,20 +158,51 @@ constraints:
 
 ---
 
-## Usage Examples
+## Project Structure
 
-### Basic usage
-```bash
-python seating_chart.py students.yaml --classroom classroom.yaml
+```
+seating-charter/
+├── index.html              # Main application page
+├── css/
+│   └── styles.css         # All styling (Riverton HS colors)
+├── js/
+│   ├── app.js             # UI logic and file handling
+│   ├── seating-generator.js  # Core algorithm
+│   └── libs/
+│       └── js-yaml.min.js    # YAML parser library
+├── examples/              # Example YAML files for download
+│   ├── classroom.yaml
+│   └── students.yaml
+├── README.md              # User documentation
+├── CLAUDE.md              # Project specification (this file)
+└── DEPLOYMENT.md          # GitHub Pages deployment guide
 ```
 
-### With random seed for reproducibility
-```bash
-python seating_chart.py students.yaml --classroom classroom.yaml --seed 42
-```
+---
 
-### Multiple classes with different student lists
-```bash
-python seating_chart.py class_period1.yaml --classroom classroom.yaml
-python seating_chart.py class_period2.yaml --classroom classroom.yaml
-```
+## Design Principles
+
+### Privacy & Security
+- **No server processing**: All computation happens in the browser
+- **No data transmission**: Student names never leave the user's computer
+- **FERPA compliant**: Safe for use with student data
+- **No tracking**: No analytics or third-party scripts
+
+### Accessibility
+- Works on all modern browsers (Chrome, Firefox, Safari, Edge)
+- Responsive design (desktop, tablet, mobile)
+- Keyboard accessible
+- Print-friendly output
+
+### User Experience
+- Simple file upload interface
+- Clear error messages
+- Loading indicators
+- Immediate visual feedback
+- One-click print and regenerate
+
+### Styling
+- Riverton High School colors (purple and silver theme)
+- Professional, educational appearance
+- Clean, uncluttered interface
+- High contrast for readability
