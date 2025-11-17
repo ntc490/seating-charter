@@ -1,0 +1,15 @@
+# Node modules
+node_modules/
+
+# Test coverage
+coverage/
+
+# npm debug logs
+npm-debug.log*
+
+# Environment files
+.env
+.env.local
+
+# Claude Code settings (local only)
+.claude/

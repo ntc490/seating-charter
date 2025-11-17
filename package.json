@@ -1,0 +1,19 @@
+{
+  "name": "seating-charter",
+  "version": "1.0.0",
+  "description": "A privacy-first web application for teachers to create randomized seating charts",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "keywords": ["seating", "classroom", "education"],
+  "author": "Riverton High School",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
+  "jest": {
+    "testEnvironment": "node"
+  }
+}
