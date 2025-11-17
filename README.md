@@ -23,7 +23,7 @@ A privacy-first web application for teachers to create randomized seating charts
 📋 **Smart Constraints**
 - Keep certain students apart (same or adjacent desks)
 - Assign students to specific rows/columns
-- "Large students" count as 2 towards desk capacity
+- "Large students" count as 1.5 towards desk capacity (50% more space)
 - Support for groups that can't sit near each other
 
 🎲 **Reproducible Results**
@@ -79,8 +79,9 @@ Define your classroom layout:
 rows: 4
 columns: 6
 
-# Maximum students per desk (default)
-max_capacity: 3
+# Maximum capacity per desk (default)
+# Regular students = 1.0, Large students = 1.5
+max_capacity: 3.0
 
 # Optional: Block off specific desks (1-indexed)
 blocked_desks:
@@ -91,7 +92,7 @@ blocked_desks:
 desk_capacity_overrides:
   - row: 1
     column: 1
-    max: 2  # Front desk holds only 2 students
+    max: 2.5  # Cramped desk (against wall)
 ```
 
 ### students.yaml
@@ -111,7 +112,7 @@ constraints:
     - [Alice, Bob]      # These two talk too much
     - [Charlie, Diana]  # These two distract each other
 
-  # Students who need extra space (count as 2)
+  # Students who need extra space (count as 1.5)
   large_students:
     - Charlie  # Uses wheelchair
 
@@ -139,7 +140,7 @@ The seating chart generator:
 
 1. **Even Distribution**: Spreads students across all desks evenly before filling any desk completely
 2. **Constraint Checking**: Ensures all placement rules are respected
-3. **Smart Placement**: Large students count as 2 towards desk capacity
+3. **Smart Placement**: Large students count as 1.5 towards desk capacity
 4. **Random with Seed**: Optional seed for reproducible results
 
 ### Classroom Orientation

@@ -61,7 +61,7 @@ class SeatingChartGenerator {
         const totalDesks = this.rows * this.columns;
         const availableDesks = totalDesks - this.blockedDesks.size;
 
-        // Calculate maximum capacity (accounting for large students counting as 2)
+        // Calculate maximum capacity (accounting for large students counting as 1.5)
         let maxCapacity = 0;
         for (let row = 0; row < this.rows; row++) {
             for (let col = 0; col < this.columns; col++) {
@@ -71,14 +71,14 @@ class SeatingChartGenerator {
             }
         }
 
-        // Adjust for large students (they count as 2, so reduce capacity)
+        // Adjust for large students (they count as 1.5, so reduce capacity by 0.5 per large student)
         const largeStudentCount = this.largeStudents.size;
-        const effectiveMaxCapacity = maxCapacity - largeStudentCount;
+        const effectiveMaxCapacity = maxCapacity - (largeStudentCount * 0.5);
 
         if (this.students.length > effectiveMaxCapacity) {
             throw new Error(
                 `Too many students (${this.students.length}) for maximum desk capacity ` +
-                `(${effectiveMaxCapacity} with ${largeStudentCount} large students counting as 2)`
+                `(${effectiveMaxCapacity.toFixed(1)} with ${largeStudentCount} large students counting as 1.5)`
             );
         }
 
@@ -151,19 +151,19 @@ class SeatingChartGenerator {
         // Get students currently at this desk
         const currentDeskStudents = this._getStudentsAtDesk(seating, row, col);
 
-        // Check desk capacity - large students count as 2 towards max
+        // Check desk capacity - large students count as 1.5 towards max
         const maxCapacity = this._getDeskMaxCapacity(row, col);
 
-        // Calculate current "weight" at desk (large students count as 2)
+        // Calculate current "weight" at desk (large students count as 1.5)
         let currentWeight = currentDeskStudents.length;
         currentDeskStudents.forEach(deskStudent => {
             if (this.largeStudents.has(deskStudent)) {
-                currentWeight += 1; // Add 1 more (already counted as 1, now counts as 2)
+                currentWeight += 0.5; // Add 0.5 more (already counted as 1, now counts as 1.5)
             }
         });
 
         // Calculate weight of new student
-        const newStudentWeight = this.largeStudents.has(student) ? 2 : 1;
+        const newStudentWeight = this.largeStudents.has(student) ? 1.5 : 1;
 
         // Check if adding this student would exceed capacity
         if (currentWeight + newStudentWeight > maxCapacity) {

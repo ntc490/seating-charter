@@ -36,7 +36,7 @@ constraints:
     - [Charlie, Diana]  # Charlie and Diana distract each other
     - [Emma, Frank, Grace]  # These three can't be near ANY of the others in this group
 
-  # Students who need more space (max 2 students at their desk)
+  # Students who need more space (count as 1.5 towards max capacity)
   large_students:
     - Henry    # Henry uses a wheelchair
     - Iris     # Iris has lots of art supplies

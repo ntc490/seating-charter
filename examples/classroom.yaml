@@ -4,8 +4,9 @@
 rows: 5
 columns: 3
 
-# Maximum students per desk (default for all desks)
-max_capacity: 3
+# Maximum capacity per desk (default for all desks)
+# Regular students = 1.0, Large students = 1.5
+max_capacity: 3.0
 
 # Optional: Block off specific desks (1-indexed)
 # These positions won't be available for students
@@ -16,19 +17,20 @@ blocked_desks:
     column: 3
 
 # Optional: Override capacity for specific desks (1-indexed)
+# Example: Desks against walls are more cramped
 desk_capacity_overrides:
   - row: 1
     column: 3
-    max: 2
+    max: 2.5 # Cramped desk - fits 2 regular OR 1 large + 1 regular
   - row: 2
     column: 3
-    max: 2
+    max: 2.5 # Cramped desk - fits 2 regular OR 1 large + 1 regular
   - row: 3
     column: 3
-    max: 2
+    max: 2.5 # Cramped desk - fits 2 regular OR 1 large + 1 regular
   - row: 4
     column: 3
-    max: 2
+    max: 2.5 # Cramped desk - fits 2 regular OR 1 large + 1 regular
   - row: 5
     column: 3
-    max: 2
+    max: 2.5 # Cramped desk - fits 2 regular OR 1 large + 1 regular

@@ -41,8 +41,8 @@ A client-side web application for teachers to create seating charts with customi
 - Assign students to desks with even distribution
   - Spread students evenly across all available desks
   - Fill desks one student at a time until maximum capacity is reached
-  - Respect maximum desk capacity (default or overridden)
-  - Large students count as 2 students towards the maximum capacity
+  - Respect maximum desk capacity (default or overridden, can be decimal like 2.5 or 3.0)
+  - Large students count as 1.5 towards the maximum capacity (use 50% more space)
   - Minimize empty desks by distributing evenly
 - Ensure students who can't sit together are not placed at the same desk or adjacent desks
   - Supports groups of 2+ students (any student in the group cannot be at the same/adjacent desk as any other in that group)
@@ -59,11 +59,13 @@ A client-side web application for teachers to create seating charts with customi
 
 **Adjacent desks**: Desks that are directly next to each other (up, down, left, or right). Does not include diagonal desks.
 
-**Large student**: A student who requires more personal space or has materials that take up more room. Large students count as 2 students towards the desk's maximum capacity. For example, if a desk has a max capacity of 3, a large student plus one regular student would fill the desk (2 + 1 = 3).
+**Large student**: A student who requires more personal space or has materials that take up more room. Large students count as 1.5 towards the desk's maximum capacity (50% more space than a regular student). For example:
+- Desk with max capacity 3.0: Can hold 3 regular students OR 2 large students OR 1 large + 1 regular (1.5 + 1 = 2.5)
+- Desk with max capacity 2.5 (cramped): Can hold 2 regular students OR 1 large + 1 regular (1.5 + 1 = 2.5), but NOT 2 large students (3.0 exceeds limit)
 
-**Desk capacity**: The maximum number of students that can be assigned to a desk.
-- **Default capacity**: Applies to all desks unless overridden (e.g., max: 3)
-- **Capacity override**: Specific desks can have custom maximum capacity (e.g., max: 2 or max: 4)
+**Desk capacity**: The maximum capacity weight that can be assigned to a desk. Can be a decimal value (e.g., 2.5, 3.0).
+- **Default capacity**: Applies to all desks unless overridden (e.g., max_capacity: 3.0)
+- **Capacity override**: Specific desks can have custom maximum capacity (e.g., max: 2.5 for desks against walls)
 
 **Even distribution**: The algorithm spreads students across all available desks evenly, placing one student at a time. This minimizes empty desks and ensures balanced distribution before any desk becomes full.
 
@@ -95,8 +97,9 @@ Example files are provided in the `examples/` directory:
 rows: 4
 columns: 6
 
-# Maximum students per desk (default for all desks)
-max_capacity: 3
+# Maximum capacity per desk (default for all desks)
+# Regular students = 1.0, Large students = 1.5
+max_capacity: 3.0
 
 # Optional: Block off specific desks (1-indexed)
 blocked_desks:
@@ -107,12 +110,12 @@ blocked_desks:
 
 # Optional: Override capacity for specific desks (1-indexed)
 desk_capacity_overrides:
-  - row: 1      # Front left desk
+  - row: 1      # Front left desk (against wall, more cramped)
     column: 1
-    max: 2      # Max 2 students
-  - row: 4      # Back right desk
+    max: 2.5    # Can fit 2 regular OR 1 large + 1 regular
+  - row: 4      # Back right desk (larger table)
     column: 5
-    max: 4      # Max 4 students (larger desk)
+    max: 4.5    # Can fit 4 regular OR 3 large OR various combinations
 ```
 
 ### students.yaml
@@ -140,7 +143,7 @@ constraints:
     - [Charlie, Diana]       # Charlie and Diana distract each other
     - [Emma, Frank, Grace]   # These three can't be near ANY others in this group
 
-  # Students who need more space (count as 2 towards max capacity)
+  # Students who need more space (count as 1.5 towards max capacity)
   large_students:
     - Henry    # Henry uses a wheelchair
     - Iris     # Iris has lots of art supplies
