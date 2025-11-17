@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seating Chart Generator</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Seating Chart Generator</h1>
+            <p class="subtitle">Generate random seating charts for your classroom</p>
+        </header>
+
+        <main>
+            <!-- Instructions -->
+            <section class="instructions">
+                <h2>How to Use</h2>
+                <ol>
+                    <li>Upload your <strong>classroom.yaml</strong> file (defines desk layout)</li>
+                    <li>Upload your <strong>students.yaml</strong> file (student names and constraints)</li>
+                    <li>Click <strong>Generate Seating Chart</strong></li>
+                    <li>Download <a href="examples/classroom.yaml" download>example classroom.yaml</a> or <a href="examples/students.yaml" download>example students.yaml</a> to get started</li>
+                </ol>
+            </section>
+
+            <!-- File Upload Section -->
+            <section class="upload-section">
+                <div class="file-upload-container">
+                    <div class="file-upload">
+                        <input type="file" id="classroomFile" accept=".yaml,.yml" />
+                        <label for="classroomFile" class="file-label">
+                            <span class="file-icon">📋</span>
+                            <span class="file-text" id="classroomFileName">Choose classroom.yaml</span>
+                        </label>
+                    </div>
+
+                    <div class="file-upload">
+                        <input type="file" id="studentsFile" accept=".yaml,.yml" />
+                        <label for="studentsFile" class="file-label">
+                            <span class="file-icon">👥</span>
+                            <span class="file-text" id="studentsFileName">Choose students.yaml</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <div class="seed-input">
+                        <label for="seedInput">Random Seed (optional):</label>
+                        <input type="number" id="seedInput" placeholder="Leave empty for random">
+                    </div>
+                    <button id="generateBtn" class="btn-primary" disabled>Generate Seating Chart</button>
+                </div>
+            </section>
+
+            <!-- Error Display -->
+            <div id="errorDisplay" class="error-display" style="display: none;"></div>
+
+            <!-- Loading Indicator -->
+            <div id="loadingIndicator" class="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p>Generating seating chart...</p>
+            </div>
+
+            <!-- Results Section -->
+            <section id="resultsSection" class="results-section" style="display: none;">
+                <div class="results-header">
+                    <h2>Seating Chart</h2>
+                    <div class="results-actions">
+                        <button id="printBtn" class="btn-secondary">Print</button>
+                        <button id="regenerateBtn" class="btn-secondary">Regenerate</button>
+                    </div>
+                </div>
+
+                <div class="classroom-info">
+                    <p id="statsDisplay"></p>
+                </div>
+
+                <div class="orientation-labels">
+                    <div class="front-label">FRONT OF CLASSROOM</div>
+                </div>
+
+                <div id="seatingChart" class="seating-chart"></div>
+
+                <div class="orientation-labels">
+                    <div class="back-label">BACK OF CLASSROOM</div>
+                    <div class="side-label">Left side ← → Right side</div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>
+                All processing happens in your browser. No student data is transmitted.
+                <br>
+                <a href="https://github.com/yourusername/seating-chart" target="_blank">View on GitHub</a>
+            </p>
+        </footer>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="js/libs/js-yaml.min.js"></script>
+    <script src="js/seating-generator.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
