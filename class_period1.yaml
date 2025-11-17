@@ -21,6 +21,13 @@ students:
   - Ryan
   - Sarah
   - Tom
+  - Nathan
+  - Marianne
+  - Audrey
+  - Tyler
+  - Ava
+  - Chayden
+  - Trevor
 
 constraints:
   # Students who cannot sit at the same desk OR adjacent desks

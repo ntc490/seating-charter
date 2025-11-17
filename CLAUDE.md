@@ -21,9 +21,9 @@ A Python-based script for teachers to create seating charts with customizable cl
 #### 2. Classroom Layout (YAML)
 - Defines the physical desk arrangement
 - Specifies number of rows and columns of desks
-- **Default desk capacity**: Range of students per desk (e.g., 2-3 students)
+- **Default desk capacity**: Maximum number of students per desk (e.g., 3 students)
 - **Blocked desks**: Optional list of desk positions that are unavailable (e.g., broken desks, teacher's desk)
-- **Desk capacity overrides**: Optional list of specific desks with custom min/max capacity
+- **Desk capacity overrides**: Optional list of specific desks with custom maximum capacity
 - Layout orientation:
   - First row = front of the classroom
   - Last row = back of the classroom
@@ -33,10 +33,11 @@ A Python-based script for teachers to create seating charts with customizable cl
 ### Functionality
 - Generate random seating charts that respect all placement rules
 - Assign students to desks with even distribution
-  - Respect default capacity range (e.g., 2-3 students per desk)
-  - Respect "large" student constraints (max 2 students at their desk)
-  - Respect desk capacity overrides
-  - Balance desk occupancy across the classroom
+  - Spread students evenly across all available desks
+  - Fill desks one student at a time until maximum capacity is reached
+  - Respect maximum desk capacity (default or overridden)
+  - Large students count as 2 students towards the maximum capacity
+  - Minimize empty desks by distributing evenly
 - Ensure students who can't sit together are not placed at the same desk or adjacent desks
   - Supports groups of 2+ students (any student in the group cannot be at the same/adjacent desk as any other in that group)
 - Place students with position constraints:
@@ -50,13 +51,13 @@ A Python-based script for teachers to create seating charts with customizable cl
 
 **Adjacent desks**: Desks that are directly next to each other (up, down, left, or right). Does not include diagonal desks.
 
-**Large student**: A student who requires more personal space or has materials that take up more room. When a "large" student is assigned to a desk, that desk can hold a maximum of 2 students total (the large student + 1 other).
+**Large student**: A student who requires more personal space or has materials that take up more room. Large students count as 2 students towards the desk's maximum capacity. For example, if a desk has a max capacity of 3, a large student plus one regular student would fill the desk (2 + 1 = 3).
 
-**Desk capacity**: The number of students that can be assigned to a desk.
-- **Default capacity**: Applies to all desks unless overridden (e.g., min: 2, max: 3)
-- **Capacity override**: Specific desks can have custom min/max values
+**Desk capacity**: The maximum number of students that can be assigned to a desk.
+- **Default capacity**: Applies to all desks unless overridden (e.g., max: 3)
+- **Capacity override**: Specific desks can have custom maximum capacity (e.g., max: 2 or max: 4)
 
-**Even distribution**: The algorithm attempts to balance the number of students at each desk, avoiding situations where some desks are full while others are nearly empty, while respecting capacity constraints.
+**Even distribution**: The algorithm spreads students across all available desks evenly, placing one student at a time. This minimizes empty desks and ensures balanced distribution before any desk becomes full.
 
 ---
 
@@ -68,10 +69,8 @@ A Python-based script for teachers to create seating charts with customizable cl
 rows: 4
 columns: 6
 
-# Default capacity for all desks
-default_capacity:
-  min: 2
-  max: 3
+# Maximum students per desk (default for all desks)
+max_capacity: 3
 
 # Optional: Block off specific desks (1-indexed)
 blocked_desks:
@@ -84,12 +83,10 @@ blocked_desks:
 desk_capacity_overrides:
   - row: 1      # Front left desk
     column: 1
-    min: 1      # Can have just 1 student
     max: 2      # Max 2 students
   - row: 4      # Back right desk
     column: 5
-    min: 3      # Must have 3 students
-    max: 3
+    max: 4      # Max 4 students (larger desk)
 ```
 
 ### students.yaml

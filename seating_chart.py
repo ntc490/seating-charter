@@ -22,10 +22,8 @@ class SeatingChartGenerator:
         self.students = students_config['students']
         self.constraints = students_config.get('constraints', {})
 
-        # Parse default desk capacity
-        default_cap = classroom_config.get('default_capacity', {'min': 2, 'max': 3})
-        self.default_min_capacity = default_cap.get('min', 2)
-        self.default_max_capacity = default_cap.get('max', 3)
+        # Parse default desk capacity (max only)
+        self.default_max_capacity = classroom_config.get('max_capacity', 3)
 
         # Parse blocked desks from classroom config
         self.blocked_desks = set()
@@ -33,15 +31,12 @@ class SeatingChartGenerator:
             # Convert to 0-indexed
             self.blocked_desks.add((blocked['row'] - 1, blocked['column'] - 1))
 
-        # Parse desk capacity overrides
+        # Parse desk capacity overrides (max only)
         self.desk_capacity_overrides = {}
         for override in classroom_config.get('desk_capacity_overrides', []):
             row = override['row'] - 1  # Convert to 0-indexed
             col = override['column'] - 1
-            self.desk_capacity_overrides[(row, col)] = {
-                'min': override.get('min', self.default_min_capacity),
-                'max': override.get('max', self.default_max_capacity)
-            }
+            self.desk_capacity_overrides[(row, col)] = override.get('max', self.default_max_capacity)
 
         # Parse constraints
         self.cannot_sit_together = self.constraints.get('cannot_sit_together', [])
@@ -63,17 +58,22 @@ class SeatingChartGenerator:
         total_desks = self.rows * self.columns
         available_desks = total_desks - len(self.blocked_desks)
 
-        # Calculate maximum capacity
+        # Calculate maximum capacity (accounting for large students counting as 2)
+        # For validation, assume worst case where all large students are spread out
         max_capacity = 0
         for row in range(self.rows):
             for col in range(self.columns):
                 if (row, col) not in self.blocked_desks:
-                    capacity = self._get_desk_capacity(row, col)
-                    max_capacity += capacity['max']
+                    max_capacity += self._get_desk_max_capacity(row, col)
 
-        if len(self.students) > max_capacity:
+        # Adjust for large students (they count as 2, so reduce capacity)
+        large_student_count = len(self.large_students)
+        effective_max_capacity = max_capacity - large_student_count
+
+        if len(self.students) > effective_max_capacity:
             raise ValueError(
-                f"Too many students ({len(self.students)}) for maximum desk capacity ({max_capacity})"
+                f"Too many students ({len(self.students)}) for maximum desk capacity "
+                f"({effective_max_capacity} with {large_student_count} large students counting as 2)"
             )
 
         # Validate row/column requirements are within bounds
@@ -89,11 +89,11 @@ class SeatingChartGenerator:
                     f"Column {col} for student {student} is out of bounds (1-{self.columns})"
                 )
 
-    def _get_desk_capacity(self, row: int, col: int) -> Dict[str, int]:
-        """Get the min/max capacity for a specific desk."""
+    def _get_desk_max_capacity(self, row: int, col: int) -> int:
+        """Get the maximum capacity for a specific desk."""
         if (row, col) in self.desk_capacity_overrides:
             return self.desk_capacity_overrides[(row, col)]
-        return {'min': self.default_min_capacity, 'max': self.default_max_capacity}
+        return self.default_max_capacity
 
     def _get_neighbors(self, row: int, col: int) -> List[Tuple[int, int]]:
         """Get neighboring desk positions (up, down, left, right)."""
@@ -143,18 +143,20 @@ class SeatingChartGenerator:
         # Get students currently at this desk
         current_desk_students = self._get_students_at_desk(seating, row, col)
 
-        # Check desk capacity
-        capacity = self._get_desk_capacity(row, col)
-        max_capacity = capacity['max']
+        # Check desk capacity - large students count as 2 towards max
+        max_capacity = self._get_desk_max_capacity(row, col)
 
-        # If student is large or any student at desk is large, max is 2
-        if student in self.large_students:
-            max_capacity = min(max_capacity, 2)
+        # Calculate current "weight" at desk (large students count as 2)
+        current_weight = len(current_desk_students)
         for desk_student in current_desk_students:
             if desk_student in self.large_students:
-                max_capacity = min(max_capacity, 2)
+                current_weight += 1  # Add 1 more (already counted as 1, now counts as 2)
 
-        if len(current_desk_students) >= max_capacity:
+        # Calculate weight of new student
+        new_student_weight = 2 if student in self.large_students else 1
+
+        # Check if adding this student would exceed capacity
+        if current_weight + new_student_weight > max_capacity:
             return False
 
         # Check cannot sit together constraints - same desk
@@ -199,33 +201,12 @@ class SeatingChartGenerator:
                     if seating[r][c] != "BLOCKED"
                 ]
 
-                # Strategy: Prefer desks with students but not full (encourages grouping)
-                # Sort priority: partially filled > empty > (full desks filtered out)
-                random.shuffle(positions)
+                # Strategy: Even distribution - always prefer desks with fewest students
+                # This spreads students across all desks before filling any desk completely
+                random.shuffle(positions)  # Shuffle first for randomness among equal desks
 
-                def sort_key(pos):
-                    row, col = pos
-                    current_count = len(seating[row][col])
-                    capacity = self._get_desk_capacity(row, col)
-                    min_cap = capacity['min']
-                    max_cap = capacity['max']
-
-                    # Check if any student at this desk is large
-                    if any(s in self.large_students for s in seating[row][col]):
-                        max_cap = min(max_cap, 2)
-
-                    # Priority tiers:
-                    # 0 = partially filled desks (1+ students, not full)
-                    # 1 = empty desks
-                    # 2 = will be filtered out (full desks)
-                    if current_count > 0 and current_count < max_cap:
-                        return (0, current_count)  # Prefer partially filled
-                    elif current_count == 0:
-                        return (1, 0)  # Then empty
-                    else:
-                        return (2, current_count)  # Shouldn't try full desks
-
-                positions.sort(key=sort_key)
+                # Sort by number of students (fewest first)
+                positions.sort(key=lambda pos: len(seating[pos[0]][pos[1]]))
 
                 # Try to place student in a valid position
                 for row, col in positions:
@@ -248,31 +229,6 @@ class SeatingChartGenerator:
             "Constraints may be too restrictive."
         )
 
-    def _verify_min_capacities(self, seating: List[List[List[str]]]) -> bool:
-        """Verify that all desks meet their minimum capacity requirements."""
-        for row in range(self.rows):
-            for col in range(self.columns):
-                if seating[row][col] == "BLOCKED":
-                    continue
-
-                desk_students = seating[row][col]
-                if len(desk_students) == 0:
-                    # Empty desks are okay
-                    continue
-
-                capacity = self._get_desk_capacity(row, col)
-                min_capacity = capacity['min']
-
-                # Check if any student at this desk is "large"
-                has_large_student = any(s in self.large_students for s in desk_students)
-                if has_large_student:
-                    # For large students, we're more lenient - just need at least 1
-                    min_capacity = 1
-
-                if len(desk_students) < min_capacity:
-                    return False
-
-        return True
 
     def print_chart(self, seating: List[List[List[str]]]):
         """Print the seating chart in a readable format."""

@@ -1,25 +1,34 @@
 # Classroom layout configuration
 # Defines the number of rows and columns of desks
 
-rows: 4
-columns: 6
+rows: 5
+columns: 3
 
-# Default capacity for all desks (min and max students per desk)
-default_capacity:
-  min: 2
-  max: 3
+# Maximum students per desk (default for all desks)
+max_capacity: 3
 
 # Optional: Block off specific desks (1-indexed)
 # These positions won't be available for students
 blocked_desks:
-  - row: 2
+  - row: 5
+    column: 2
+  - row: 5
     column: 3
-  - row: 4
-    column: 6
 
 # Optional: Override capacity for specific desks (1-indexed)
 desk_capacity_overrides:
   - row: 1
-    column: 1
-    min: 1
+    column: 3
+    max: 2
+  - row: 2
+    column: 3
+    max: 2
+  - row: 3
+    column: 3
+    max: 2
+  - row: 4
+    column: 3
+    max: 2
+  - row: 5
+    column: 3
     max: 2
