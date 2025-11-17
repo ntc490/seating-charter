@@ -28,6 +28,9 @@ students:
   - Ava
   - Chayden
   - Trevor
+  - Dana
+  - Dan
+  - Samantha
 
 constraints:
   # Students who cannot sit at the same desk OR adjacent desks
